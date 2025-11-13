@@ -8,4 +8,4 @@ RUN npm install --production
 COPY . .
 
 EXPOSE 3004
-CMD ["node", "src.envios/server.js"]
+CMD ["node", "src.envios/index.js"]
