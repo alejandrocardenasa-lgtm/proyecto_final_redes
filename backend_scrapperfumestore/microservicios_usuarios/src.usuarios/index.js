@@ -11,5 +11,6 @@ app.use(express.json());
 app.use(usuariosController);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microservicio de Usuarios ejecutándose en http://localhost:${PORT}`);
+  console.log(`Usuarios corriendo en puerto interno ${PORT}`);
+
 });
