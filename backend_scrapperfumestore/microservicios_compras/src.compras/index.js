@@ -11,5 +11,6 @@ app.use(express.json());
 app.use(comprasController);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microservicio de Compras ejecutándose en http://localhost:${PORT}`);
+  console.log(`compras corriendo en puerto interno ${PORT}`);
+
 });
