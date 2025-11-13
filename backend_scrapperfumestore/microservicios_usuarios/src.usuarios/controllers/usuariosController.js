@@ -3,6 +3,7 @@ const router = Router();
 const usuariosModel = require('../models/usuariosModel');
 const axios = require('axios');
 
+// Registra un nuevo usuario en la base de datos
 router.post('/api/usuarios/registro', async (req, res) => {
   try {
     const { nombre, email, usuario, password, rol } = req.body;
@@ -14,6 +15,7 @@ router.post('/api/usuarios/registro', async (req, res) => {
   }
 });
 
+// Valida las credenciales de inicio de sesión
 router.post('/api/usuarios/login', async (req, res) => {
   try {
     const { usuario, password } = req.body;
@@ -29,6 +31,7 @@ router.post('/api/usuarios/login', async (req, res) => {
   }
 });
 
+// Obtiene un usuario por su ID
 router.get('/api/usuarios/:id', async (req, res) => {
     try {
         const user = await usuariosModel.obtenerUsuarioPorId(req.params.id);
@@ -43,6 +46,7 @@ router.get('/api/usuarios/:id', async (req, res) => {
     }
 });
 
+// Actualiza los datos de un usuario existente
 router.put('/api/usuarios/:id', async (req, res) => {
     try {
         const { nombre, email } = req.body;
@@ -58,6 +62,7 @@ router.put('/api/usuarios/:id', async (req, res) => {
     }
 });
 
+// Elimina un usuario por su ID
 router.delete('/api/usuarios/:id', async (req, res) => {
     try {
         const result = await usuariosModel.eliminarUsuario(req.params.id);
