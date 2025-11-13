@@ -11,5 +11,6 @@ app.use(express.json());
 app.use(enviosController);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microservicio de Envíos ejecutándose en http://localhost:${PORT}`);
+  console.log(`envios corriendo en puerto interno ${PORT}`);
+
 });
