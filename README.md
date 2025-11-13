@@ -4,7 +4,7 @@ Universidad Autónoma de Occidente – 2025
 
 1. Introducción
 
-Este proyecto implementa una arquitectura completa basada en microservicios, utilizando Docker Swarm como orquestador, HAProxy como balanceador y enrutador central, Nginx como servidor estático para el frontend, MariaDB como motor de base de datos y Apache JMeter para la ejecución de pruebas de carga y rendimiento sobre los microservicios..
+Este proyecto implementa una arquitectura completa basada en microservicios, utilizando Docker Swarm como orquestador de contenedores, HAProxy como balanceador y enrutador central, Nginx como servidor estático para el frontend, MariaDB como motor de base de datos y Apache JMeter para la ejecución de pruebas de carga, rendimiento y validación de escalabilidad horizontal (réplicas) sobre los microservicios del sistema.
 
 El sistema está distribuido entre tres nodos virtualizados con Vagrant sobre una red privada 192.168.100.0/24.
 
@@ -254,3 +254,77 @@ docker stack deploy -c docker-swarm.yml proyecto_final
 
 En menos de 3 minutos el sistema vuelve a funcionar.
 
+15. Pruebas de Carga y Escalabilidad con Apache JMeter
+
+Para evaluar el rendimiento de los microservicios y validar el comportamiento del sistema en condiciones de alta demanda, se utilizaron pruebas de carga mediante Apache JMeter. Estas pruebas permiten identificar:
+
+Capacidad máxima de peticiones por segundo
+
+Latencias bajo estrés
+
+Consumo de CPU y RAM por microservicio
+
+Comportamiento del balanceo de carga en HAProxy
+
+Estabilidad del sistema con escalado horizontal
+
+15,1.Configuración de la prueba
+
+Se definió un escenario de carga que simula el comportamiento real de usuarios concurrentes utilizando el endpoint de cada microservicio a través de HAProxy:
+
+Ejemplo de endpoint usado en la prueba:
+
+http://192.168.100.3:5080/api/usuarios/1
+
+Parámetros utilizados:
+
+100 usuarios concurrentes
+
+Ramp-up de 5 segundos
+
+2000 peticiones totales por prueba
+
+Tiempo máximo de respuesta aceptable: 800 ms
+
+15,2. Escalabilidad con Docker Swarm
+
+Para validar la escalabilidad horizontal del sistema, se incrementó el número de réplicas de varios microservicios utilizando Docker Swarm:
+
+docker service scale proyecto_final_microservicios_usuarios=3
+docker service scale proyecto_final_microservicios_perfumes=3
+
+Swarm distribuye automáticamente las réplicas en los nodos del clúster y HAProxy balancea la carga entre todas las instancias.
+
+15,3. Resultados esperados
+
+Al aplicar réplicas, se observó:
+
+Disminución notable del tiempo promedio de respuesta.
+
+Incremento del throughput (peticiones atendidas por segundo).
+
+Reducción de errores por saturación.
+
+Uso balanceado de CPU entre los nodos del clúster.
+
+Este comportamiento confirma que el sistema soporta correctamente el escalado horizontal y aprovecha la arquitectura distribuida.
+
+15,4. Validación del balanceo en HAProxy
+
+Durante las pruebas, se monitoreó el dashboard de HAProxy en:
+
+http://192.168.100.3:8404
+
+Allí se puede observar en tiempo real:
+
+Estado de cada instancia (UP/DOWN)
+
+Número de peticiones por réplica
+
+Distribución del tráfico entre réplicas
+
+Latencia mínima, promedio y máxima
+
+13.5. Conclusión de las pruebas de carga
+
+El sistema demostró estabilidad, balanceo efectivo y la capacidad de manejar múltiples solicitudes concurrentes cuando se aumenta el número de réplicas de los microservicios críticos, validando así la robustez de la arquitectura implementada.
