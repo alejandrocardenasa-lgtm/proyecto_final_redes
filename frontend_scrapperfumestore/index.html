@@ -589,7 +589,7 @@
             };
             
             const fetchPerfumes = async (filtro = null, valor = '') => {
-                let url = 'http://192.168.100.3:4000/api/perfumes';
+                let url = 'http://192.168.100.3:5080/api/perfumes';
                 if (filtro && valor) {
                     url += `/${filtro}/${valor}`;
                 }
@@ -635,7 +635,7 @@
                 const container = document.getElementById('pqrs-list-container');
                 container.innerHTML = '<p>Cargando PQRS...</p>';
                 try {
-                    const response = await fetch('http://192.168.100.3:3002/api/pqrs/all');
+                    const response = await fetch('http://192.168.100.3:5080/api/pqrs/all');
                     const pqrsList = await response.json();
                     container.innerHTML = '';
                     if (Array.isArray(pqrsList) && pqrsList.length > 0) {
@@ -707,7 +707,7 @@
                     password: document.getElementById('registro-password').value,
                     rol: document.getElementById('registro-rol').value
                 };
-                enviarSolicitud('http://192.168.100.3:3001/api/usuarios/registro', 'POST', data, true);
+                enviarSolicitud('http://192.168.100.3:5080/api/usuarios/registro', 'POST', data, true);
             });
 
             loginForm.addEventListener('submit', async (e) => {
@@ -717,7 +717,7 @@
                 const loginData = { usuario, password };
 
                 try {
-                    const response = await fetch('http://192.168.100.3:3001/api/usuarios/login', {
+                    const response = await fetch('http://192.168.100.3:5080/api/usuarios/login', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(loginData),
@@ -780,7 +780,7 @@
                     precio: parseFloat(document.getElementById('precio-prod').value),
                     stock: parseInt(document.getElementById('stock-prod').value, 10),
                 };
-                enviarSolicitud('http://192.168.100.3:4000/api/perfumes', 'POST', data);
+                enviarSolicitud('http://192.168.100.3:5080/api/perfumes', 'POST', data);
             });
 
             document.getElementById('form-productos-actualizar').addEventListener('submit', function(e) {
@@ -798,13 +798,13 @@
                 if (document.getElementById('precio-prod-act').value) data.precio = parseFloat(document.getElementById('precio-prod-act').value);
                 if (document.getElementById('stock-prod-act').value) data.stock = parseInt(document.getElementById('stock-prod-act').value, 10);
                 
-                enviarSolicitud(`http://192.168.100.3:4000/api/perfumes/${id}`, 'PUT', data);
+                enviarSolicitud(`http://192.168.100.3:5080/api/perfumes/${id}`, 'PUT', data);
             });
 
             document.getElementById('form-productos-eliminar').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const id = document.getElementById('id-prod-eliminar').value;
-                enviarSolicitud(`http://192.168.100.3:4000/api/perfumes/${id}`, 'DELETE');
+                enviarSolicitud(`http://192.168.100.3:5080/api/perfumes/${id}`, 'DELETE');
             });
             
             document.getElementById('form-usuarios-actualizar').addEventListener('submit', function(e) {
@@ -814,13 +814,13 @@
                 if (document.getElementById('nombre-usuario-act').value) data.nombre = document.getElementById('nombre-usuario-act').value;
                 if (document.getElementById('email-usuario-act').value) data.email = document.getElementById('email-usuario-act').value;
                 
-                enviarSolicitud(`http://192.168.100.3:3001/api/usuarios/${id}`, 'PUT', data);
+                enviarSolicitud(`http://192.168.100.3:5080/api/usuarios/${id}`, 'PUT', data);
             });
             
             document.getElementById('form-usuarios-eliminar').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const id = document.getElementById('id-usuario-eliminar').value;
-                enviarSolicitud(`http://192.168.100.3:3001/api/usuarios/${id}`, 'DELETE');
+                enviarSolicitud(`http://192.168.100.3:5080/api/usuarios/${id}`, 'DELETE');
             });
 
             formPqrsResponder.addEventListener('submit', async function(e) {
@@ -830,7 +830,7 @@
                     estado: document.getElementById('pqrs-estado-responder').value,
                     respuestaAdmin: document.getElementById('pqrs-respuesta-admin').value,
                 };
-                await enviarSolicitud(`http://192.168.100.3:3002/api/pqrs/${id}`, 'PUT', data);
+                await enviarSolicitud(`http://192.168.100.3:5080/api/pqrs/${id}`, 'PUT', data);
                 fetchPqrs(); // Recargar la lista de PQRS después de responder
             });
 
@@ -840,7 +840,7 @@
                 const envioId = document.getElementById('admin-envio-id').value;
                 const displayArea = document.getElementById('admin-envio-display');
                 try {
-                    const response = await fetch(`http://192.168.100.3:3004/api/envios/${envioId}`);
+                    const response = await fetch(`http://192.168.100.3:5080/api/envios/${envioId}`);
                     const data = await response.json();
                     if (response.ok) {
                         displayArea.innerHTML = `
@@ -864,7 +864,7 @@
                 const envioId = document.getElementById('admin-update-envio-id').value;
                 const newEstado = document.getElementById('admin-update-estado-envio').value;
                 const data = { estado: newEstado };
-                await enviarSolicitud(`http://192.168.100.3:3004/api/envios/${envioId}`, 'PUT', data);
+                await enviarSolicitud(`http://192.168.100.3:5080/api/envios/${envioId}`, 'PUT', data);
             });
 
 
@@ -880,7 +880,7 @@
                     cantidad: parseInt(document.getElementById('compra-cantidad').value, 10),
                     direccionEnvio: document.getElementById('compra-direccionEnvio').value,
                 };
-                const res = await enviarSolicitud('http://192.168.100.3:3003/api/compras', 'POST', data);
+                const res = await enviarSolicitud('http://192.168.100.3:5080/api/compras', 'POST', data);
                 if (res && res.code === 201) {
                     showMessage(`¡Compra procesada! ID de Compra: ${res.response.compraId}`, false);
                     document.getElementById('compraId-envio').value = res.response.compraId; // Precargar ID para consulta de envío
@@ -896,7 +896,7 @@
                     tipo: document.getElementById('tipo-pqrs').value,
                     descripcion: document.getElementById('descripcion-pqrs').value,
                 };
-                const res = await enviarSolicitud('http://192.168.100.3:3002/api/pqrs', 'POST', data);
+                const res = await enviarSolicitud('http://192.168.100.3:5080/api/pqrs', 'POST', data);
                 if (res && res.code === 201) {
                     showMessage(`PQRS creada con éxito.`, false);
                 } else {
@@ -907,7 +907,7 @@
             document.getElementById('form-envios-obtener').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const compraId = document.getElementById('compraId-envio').value;
-                const url = `http://192.168.100.3:3004/api/envios/compra/${compraId}`; // Endpoint para obtener envío por compraId
+                const url = `http://192.168.100.3:5080/api/envios/compra/${compraId}`; // Endpoint para obtener envío por compraId
                 const displayArea = document.getElementById('envio-status-display');
                 
                 try {
@@ -946,4 +946,5 @@
         });
     </script>
 </body>
+
 </html>
