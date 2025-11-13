@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 
 const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',       
+  host: 'mariadb_perfumes',   // Nombre del servicio en Swarm
+  user: 'root',
   password: '',
-  port: '3307',       
-  database: 'perfumedb' 
+  port: 3306,                 // Puerto interno del contenedor
+  database: 'perfumedb'
 });
 
 async function getAll() {
@@ -69,8 +69,15 @@ async function getByPrecio(precio) {
 }
 
 async function updateStock(id, cantidad) {
-  const [result] = await db.query('UPDATE perfumes SET stock = stock + ? WHERE id = ?', [cantidad, id]);
+  const [result] = await db.query(
+    'UPDATE perfumes SET stock = stock + ? WHERE id = ?', 
+    [cantidad, id]
+  );
   return result;
 }
 
-module.exports = { getAll, getById, create, update, remove, getByMarca, getByFamilia, getByTipo, getByGenero, getByNotas, getByResenas, getByPrecio, updateStock };
+module.exports = { 
+  getAll, getById, create, update, remove,
+  getByMarca, getByFamilia, getByTipo, getByGenero,
+  getByNotas, getByResenas, getByPrecio, updateStock 
+};
