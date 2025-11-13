@@ -8,4 +8,4 @@ RUN npm install --production
 COPY . .
 
 EXPOSE 3003
-CMD ["node", "src.compras/server.js"]
+CMD ["node", "src.compras/index.js"]
