@@ -11,5 +11,6 @@ app.use(express.json());
 app.use(pqrsController);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microservicio de PQRS ejecutándose en http://localhost:${PORT}`);
+  console.log(``pqrs corriendo en puerto interno ${PORT}`);
+
 });
