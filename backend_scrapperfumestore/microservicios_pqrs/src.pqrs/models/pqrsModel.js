@@ -1,10 +1,10 @@
 const mysql = require('mysql2/promise');
 
 const connection = mysql.createPool({
-  host: 'localhost',
+  host: 'mariadb_pqrs',   // Nombre del servicio en Docker Swarm
   user: 'root',
   password: '',
-  port: '3307',
+  port: 3306,             // Puerto interno del contenedor
   database: 'pqrs_db'
 });
 
@@ -25,18 +25,27 @@ async function actualizarPqrs(id, estado, respuestaAdmin) {
 }
 
 async function obtenerPqrsPorUsuario(usuarioId) {
-  const [rows] = await connection.query('SELECT * FROM pqrs WHERE usuario_id = ?', [usuarioId]);
+  const [rows] = await connection.query(
+    'SELECT * FROM pqrs WHERE usuario_id = ?', 
+    [usuarioId]
+  );
   return rows;
 }
 
 async function obtenerTodasPqrs() {
-    const [rows] = await connection.query('SELECT * FROM pqrs');
-    return rows;
+  const [rows] = await connection.query('SELECT * FROM pqrs');
+  return rows;
 }
 
 async function eliminarPqrs(id) {
-    const result = await connection.query('DELETE FROM pqrs WHERE id = ?', [id]);
-    return result;
+  const result = await connection.query('DELETE FROM pqrs WHERE id = ?', [id]);
+  return result;
 }
 
-module.exports = { crearPqrs, actualizarPqrs, obtenerPqrsPorUsuario, obtenerTodasPqrs, eliminarPqrs };
+module.exports = { 
+  crearPqrs, 
+  actualizarPqrs, 
+  obtenerPqrsPorUsuario, 
+  obtenerTodasPqrs, 
+  eliminarPqrs 
+};
