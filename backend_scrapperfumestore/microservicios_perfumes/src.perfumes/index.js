@@ -11,5 +11,6 @@ app.use(express.json());
 app.use(perfumesController);
 
 app.listen(PORT, () => {
-  console.log(`🚀 Microservicio de Productos ejecutándose en http://localhost:${PORT}`);
+  console.log(`perfumes corriendo en puerto interno ${PORT}`);
+
 });
