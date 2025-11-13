@@ -8,4 +8,4 @@ RUN npm install --production
 COPY . .
 
 EXPOSE 3001
-CMD ["node", "src.usuarios/server.js"]
+CMD ["node", "src.usuarios/index.js"]
