@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>ScrapperfumeStore | Administrador</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        :root {
+            --color-bg-dark: #0f0f0f;
+            --color-bg-medium: #1a1a1a;
+            --color-text-light: #e0e0e0;
+            --color-accent-gold: #d4af37;
+            --color-error: #ff4d4f;
+            --color-success: #28a745;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--color-bg-dark);
+            color: var(--color-text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+            transition: background-color 0.5s ease;
+        }
+
+        .main-container {
+            background-color: var(--color-bg-medium);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+            transition: box-shadow 0.5s ease;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-accent-gold);
+            margin-bottom: 0.5rem;
+            transition: color 0.5s ease;
+        }
+
+        .header-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-text-light);
+            margin-bottom: 2rem;
+        }
+
+        input, select, button, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-accent-gold);
+            font-size: 1rem;
+            background-color: transparent;
+            color: var(--color-text-light);
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 8px var(--color-accent-gold);
+        }
+
+        button {
+            background-color: var(--color-accent-gold);
+            color: var(--color-bg-dark);
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #e6c15f;
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .response-message {
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-top: 1rem;
+            opacity: 0;
+            transform-origin: top;
+            animation: fadeInOut 5s ease-in-out forwards;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(-20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            90% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .response-message.success {
+            background-color: var(--color-success);
+            color: white;
+        }
+
+        .response-message.error {
+            background-color: var(--color-error);
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .section-title {
+            color: var(--color-accent-gold);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            border-bottom: 2px solid var(--color-accent-gold);
+            padding-bottom: 0.5rem;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .catalog-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .perfume-card {
+            background-color: var(--color-bg-dark);
+            border: 1px solid var(--color-accent-gold);
+            border-radius: 8px;
+            padding: 1.5rem;
+            width: 300px;
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .perfume-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2);
+        }
+        .perfume-card h4 {
+            color: var(--color-accent-gold);
+            margin-bottom: 0.5rem;
+        }
+        .perfume-card p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .toggle-button {
+            background-color: transparent;
+            color: var(--color-text-light);
+            border: 1px solid var(--color-text-light);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .toggle-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .toggle-button .material-icons {
+            color: var(--color-accent-gold);
+        }
+
+        #auth-toggle-menu {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        #auth-toggle-menu .toggle-button {
+            background-color: var(--color-accent-gold);
+            color: var(--color-bg-dark);
+        }
+
+        #auth-toggle-menu .toggle-button.active {
+            background-color: #e6c15f;
+            color: var(--color-bg-dark);
+        }
+        
+        #admin-actions-menu {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        #admin-actions-menu .toggle-button {
+            background-color: var(--color-accent-gold);
+            color: var(--color-bg-dark);
+        }
+
+        #admin-actions-menu .toggle-button:hover {
+            background-color: #e6c15f;
+        }
+        
+        #admin-content > div {
+            border: 1px solid var(--color-accent-gold);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        #pqrs-list {
+            text-align: left;
+            margin-top: 1rem;
+        }
+        #pqrs-list .pqrs-card {
+            background-color: var(--color-bg-dark);
+            border: 1px solid var(--color-accent-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .envio-details {
+            text-align: left;
+            border: 1px solid var(--color-accent-gold);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <h1 class="header-title">ScrapperfumeStore</h1>
+        <p class="header-subtitle">Auténtico lujo en cada fragancia.</p>
+        
+        <div id="auth-section">
+            <h2 class="section-title">Ingreso al Sistema</h2>
+            <div id="auth-toggle-menu">
+                <button id="btn-show-login" class="toggle-button active">Iniciar Sesión</button>
+                <button id="btn-show-registro" class="toggle-button">Registrar Usuario</button>
+            </div>
+            
+            <div id="login-container">
+                <h3>Iniciar Sesión</h3>
+                <form id="login-form">
+                    <input type="text" id="login-usuario" placeholder="Usuario" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                    <button type="submit">Ingresar</button>
+                </form>
+            </div>
+
+            <div id="registro-container" class="hidden">
+                <h3>Registrar Usuario</h3>
+                <form id="registro-form">
+                    <input type="text" id="registro-nombre" placeholder="Nombre completo" required>
+                    <input type="email" id="registro-email" placeholder="Email" required>
+                    <input type="text" id="registro-usuario" placeholder="Usuario" required>
+                    <input type="password" id="registro-password" placeholder="Contraseña" required>
+                    <select id="registro-rol" required>
+                        <option value="cliente">Cliente</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                    <button type="submit">Registrar</button>
+                </form>
+            </div>
+            <div id="auth-response" class="response-message hidden"></div>
+        </div>
+
+        <div id="main-app" class="hidden">
+            <p id="welcome-message" class="header-subtitle"></p>
+            <button id="logout-button">Cerrar Sesión</button>
+            
+            <div id="admin-view" class="hidden">
+                <h2 class="section-title">Panel de Administración</h2>
+                <div id="admin-actions-menu">
+                    <button id="btn-admin-productos" class="toggle-button">Gestión de Productos</button>
+                    <button id="btn-admin-usuarios" class="toggle-button">Gestión de Usuarios</button>
+                    <button id="btn-admin-pqrs" class="toggle-button">PQRS</button>
+                    <button id="btn-admin-envios" class="toggle-button">Gestión de Envíos</button>
+                </div>
+                
+                <div id="admin-content">
+                    <div id="admin-productos" class="hidden">
+                        <h3>Operaciones CRUD de Productos</h3>
+                        <div class="grid-container">
+                            <div>
+                                <form id="form-productos-crear">
+                                    <input type="text" id="nombre-prod" placeholder="Nombre del perfume" required>
+                                    <input type="text" id="marca-prod" placeholder="Marca" required>
+                                    <input type="text" id="notas-prod" placeholder="Notas">
+                                    <input type="text" id="resenas-prod" placeholder="Reseñas">
+                                    <input type="text" id="familia-prod" placeholder="Familia">
+                                    <input type="text" id="tipo-prod" placeholder="Tipo">
+                                    <input type="text" id="genero-prod" placeholder="Género">
+                                    <input type="number" id="precio-prod" placeholder="Precio" required>
+                                    <input type="number" id="stock-prod" placeholder="Stock" required>
+                                    <button type="submit">Crear Producto</button>
+                                </form>
+                            </div>
+                            <div>
+                                <form id="form-productos-actualizar">
+                                    <input type="text" id="id-prod-actualizar" placeholder="ID del perfume a actualizar" required>
+                                    <input type="text" id="nombre-prod-act" placeholder="Nuevo Nombre">
+                                    <input type="text" id="marca-prod-act" placeholder="Nueva Marca">
+                                    <input type="text" id="notas-prod-act" placeholder="Nuevas Notas">
+                                    <input type="text" id="resenas-prod-act" placeholder="Nuevas Reseñas">
+                                    <input type="text" id="familia-prod-act" placeholder="Nueva Familia">
+                                    <input type="text" id="tipo-prod-act" placeholder="Nuevo Tipo">
+                                    <input type="text" id="genero-prod-act" placeholder="Nuevo Género">
+                                    <input type="number" id="precio-prod-act" placeholder="Nuevo Precio">
+                                    <input type="number" id="stock-prod-act" placeholder="Nuevo Stock">
+                                    <button type="submit">Actualizar Producto</button>
+                                </form>
+                            </div>
+                            <div>
+                                <form id="form-productos-eliminar">
+                                    <input type="text" id="id-prod-eliminar" placeholder="ID del perfume a eliminar" required>
+                                    <button type="submit">Eliminar Producto</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-usuarios" class="hidden">
+                        <h3>Gestión de Usuarios</h3>
+                        <div class="grid-container">
+                            <div>
+                                <form id="form-usuarios-actualizar">
+                                    <input type="text" id="id-usuario-act" placeholder="ID del usuario a actualizar" required>
+                                    <input type="text" id="nombre-usuario-act" placeholder="Nuevo Nombre">
+                                    <input type="email" id="email-usuario-act" placeholder="Nuevo Email">
+                                    <button type="submit">Actualizar Usuario</button>
+                                </form>
+                            </div>
+                            <div>
+                                <form id="form-usuarios-eliminar">
+                                    <input type="text" id="id-usuario-eliminar" placeholder="ID del usuario a eliminar" required>
+                                    <button type="submit">Eliminar Usuario</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="admin-pqrs" class="hidden">
+                        <h3>PQRS de Usuarios</h3>
+                        <div id="pqrs-list-container">
+                            <p>Cargando PQRS...</p>
+                        </div>
+                        <div id="pqrs-response-form-container">
+                            <form id="form-pqrs-responder" class="hidden">
+                                <h4>Responder PQRS</h4>
+                                <input type="text" id="pqrs-id-responder" placeholder="ID de PQRS" readonly>
+                                <select id="pqrs-estado-responder" required>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Radicado">Radicado</option>
+                                    <option value="Respondido">Respondido</option>
+                                </select>
+                                <textarea id="pqrs-respuesta-admin" placeholder="Tu respuesta como administrador" rows="4" required></textarea>
+                                <button type="submit">Enviar Respuesta</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div id="admin-envios" class="hidden">
+                        <h3>Gestión de Envíos</h3>
+                        <div class="grid-container">
+                            <div>
+                                <h4>Consultar Envío</h4>
+                                <form id="form-admin-obtener-envio">
+                                    <input type="text" id="admin-envio-id" placeholder="ID del Envío" required>
+                                    <button type="submit">Consultar Envío</button>
+                                </form>
+                                <div id="admin-envio-display" class="envio-details"></div>
+                            </div>
+                            <div>
+                                <h4>Actualizar Estado de Envío</h4>
+                                <form id="form-admin-actualizar-envio">
+                                    <input type="text" id="admin-update-envio-id" placeholder="ID del Envío" required>
+                                    <select id="admin-update-estado-envio" required>
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En Proceso">En Proceso</option>
+                                        <option value="Enviado">Enviado</option>
+                                        <option value="Entregado">Entregado</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                    </select>
+                                    <button type="submit">Actualizar Estado</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="user-view" class="hidden">
+                <h2 class="section-title">Acciones de Usuario</h2>
+                <div class="action-buttons">
+                    <button id="toggle-compras" class="toggle-button"><i class="material-icons">shopping_cart</i><span>Comprar</span></button>
+                    <button id="toggle-pqrs" class="toggle-button"><i class="material-icons">help_outline</i><span>PQRS</span></button>
+                    <button id="toggle-envios" class="toggle-button"><i class="material-icons">local_shipping</i><span>Envío</span></button>
+                </div>
+                
+                <div id="seccion-acciones" class="grid-container hidden">
+                    <div id="seccion-compras" class="hidden">
+                        <h3>Realizar Compra</h3>
+                        <form id="form-compras-crear">
+                            <input type="text" id="compra-productoId" placeholder="ID del Producto" required>
+                            <input type="number" id="compra-cantidad" placeholder="Cantidad" required>
+                            <input type="text" id="compra-direccionEnvio" placeholder="Dirección de envío" required>
+                            <button type="submit">Comprar</button>
+                        </form>
+                    </div>
+    
+                    <div id="seccion-pqrs" class="hidden">
+                        <h3>Crear PQRS</h3>
+                        <form id="form-pqrs-crear">
+                            <select id="tipo-pqrs" required>
+                                <option value="">Selecciona el tipo</option>
+                                <option value="Peticion">Petición</option>
+                                <option value="Queja">Queja</option>
+                                <option value="Reclamo">Reclamo</option>
+                                <option value="Sugerencia">Sugerencia</option>
+                            </select>
+                            <textarea id="descripcion-pqrs" placeholder="Descripción de la PQRS" rows="4" required></textarea>
+                            <button type="submit">Crear PQRS</button>
+                        </form>
+                    </div>
+
+                    <div id="seccion-envios" class="hidden">
+                        <h3>Consultar Envío</h3>
+                        <form id="form-envios-obtener">
+                            <input type="text" id="compraId-envio" placeholder="ID de la Compra" required>
+                            <button type="submit">Consultar Estado</button>
+                        </form>
+                        <div id="envio-status-display" class="envio-details"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">Catálogo Completo de Perfumes</h2>
+            
+            <div class="grid-container">
+                <form id="form-filtros">
+                    <input type="text" id="filtro-texto" placeholder="Buscar por Nombre, Marca, Notas...">
+                    <select id="tipo-filtro">
+                        <option value="nombre">Nombre</option>
+                        <option value="id">ID</option>
+                        <option value="marca">Marca</option>
+                        <option value="familia">Familia</option>
+                        <option value="notas">Notas</option>
+                        <option value="genero">Género</option>
+                        <option value="precio">Precio (menor a)</option>
+                    </select>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+            
+            <div id="perfume-catalog" class="catalog-container">
+                <p>Cargando perfumes...</p>
+            </div>
+            <div id="response-area" class="response-message hidden"></div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authSection = document.getElementById('auth-section');
+            const loginForm = document.getElementById('login-form');
+            const registroForm = document.getElementById('registro-form');
+            const mainApp = document.getElementById('main-app');
+            const welcomeMessage = document.getElementById('welcome-message');
+            const logoutButton = document.getElementById('logout-button');
+            const adminView = document.getElementById('admin-view');
+            const userView = document.getElementById('user-view');
+            const perfumeCatalog = document.getElementById('perfume-catalog');
+            const responseArea = document.getElementById('response-area');
+            const authResponse = document.getElementById('auth-response');
+            
+            const btnAdminProductos = document.getElementById('btn-admin-productos');
+            const btnAdminUsuarios = document.getElementById('btn-admin-usuarios');
+            const btnAdminPqrs = document.getElementById('btn-admin-pqrs');
+            const btnAdminEnvios = document.getElementById('btn-admin-envios'); // Nuevo botón admin envíos
+
+            const adminProductosSection = document.getElementById('admin-productos');
+            const adminUsuariosSection = document.getElementById('admin-usuarios');
+            const adminPqrsSection = document.getElementById('admin-pqrs');
+            const adminEnviosSection = document.getElementById('admin-envios'); // Nueva sección admin envíos
+
+            const btnShowLogin = document.getElementById('btn-show-login');
+            const btnShowRegistro = document.getElementById('btn-show-registro');
+            const loginContainer = document.getElementById('login-container');
+            const registroContainer = document.getElementById('registro-container');
+
+            const toggleCompras = document.getElementById('toggle-compras');
+            const togglePqrs = document.getElementById('toggle-pqrs');
+            const toggleEnvios = document.getElementById('toggle-envios');
+            const seccionAcciones = document.getElementById('seccion-acciones');
+            const seccionCompras = document.getElementById('seccion-compras');
+            const seccionPqrs = document.getElementById('seccion-pqrs');
+            const seccionEnvios = document.getElementById('seccion-envios');
+            
+            const filtroForm = document.getElementById('form-filtros');
+            const tipoFiltroSelect = document.getElementById('tipo-filtro');
+            const filtroTextoInput = document.getElementById('filtro-texto');
+            
+            const formUsuariosActualizar = document.getElementById('form-usuarios-actualizar');
+            const formUsuariosEliminar = document.getElementById('form-usuarios-eliminar');
+            const formPqrsResponder = document.getElementById('form-pqrs-responder');
+
+            const formAdminObtenerEnvio = document.getElementById('form-admin-obtener-envio');
+            const formAdminActualizarEnvio = document.getElementById('form-admin-actualizar-envio');
+            
+            const showMessage = (message, isError, isAuth = false) => {
+                const targetArea = isAuth ? authResponse : responseArea;
+                targetArea.textContent = message;
+                targetArea.className = `response-message ${isError ? 'error' : 'success'}`;
+                targetArea.classList.remove('hidden');
+                setTimeout(() => {
+                    targetArea.classList.add('hidden');
+                }, 4000);
+            };
+
+            const toggleViews = (isAuthenticated) => {
+                authSection.classList.toggle('hidden', isAuthenticated);
+                mainApp.classList.toggle('hidden', !isAuthenticated);
+            };
+
+            const toggleAuthMenu = (showLogin) => {
+                loginContainer.classList.toggle('hidden', !showLogin);
+                registroContainer.classList.toggle('hidden', showLogin);
+                btnShowLogin.classList.toggle('active', showLogin);
+                btnShowRegistro.classList.toggle('active', !showLogin);
+                // Limpiar mensajes al cambiar de vista de autenticación
+                authResponse.classList.add('hidden');
+            };
+
+            const toggleAdminSection = (sectionToShow) => {
+                adminProductosSection.classList.add('hidden');
+                adminUsuariosSection.classList.add('hidden');
+                adminPqrsSection.classList.add('hidden');
+                adminEnviosSection.classList.add('hidden'); // Ocultar nueva sección de envíos
+                
+                sectionToShow.classList.remove('hidden');
+            };
+            
+            const toggleUserSection = (sectionToShow) => {
+                seccionCompras.classList.add('hidden');
+                seccionPqrs.classList.add('hidden');
+                seccionEnvios.classList.add('hidden');
+            
+                if (seccionAcciones.classList.contains('hidden')) {
+                    seccionAcciones.classList.remove('hidden');
+                    sectionToShow.classList.remove('hidden');
+                } else if (sectionToShow.classList.contains('hidden')) {
+                    sectionToShow.classList.remove('hidden');
+                } else {
+                    seccionAcciones.classList.add('hidden');
+                }
+            };
+            
+            const fetchPerfumes = async (filtro = null, valor = '') => {
+                let url = 'http://192.168.100.3:4000/api/perfumes';
+                if (filtro && valor) {
+                    url += `/${filtro}/${valor}`;
+                }
+                try {
+                    const response = await fetch(url);
+                    const perfumes = await response.json();
+                    perfumeCatalog.innerHTML = '';
+                    if (Array.isArray(perfumes) && perfumes.length > 0) {
+                        perfumes.forEach(perfume => {
+                            const card = document.createElement('div');
+                            card.className = 'perfume-card';
+                            card.innerHTML = `
+                                <h4>${perfume.nombre}</h4>
+                                <p><strong>Marca:</strong> ${perfume.marca}</p>
+                                <p><strong>Precio:</strong> $${perfume.precio_cop}</p>
+                                <p><strong>Stock:</strong> ${perfume.stock}</p>
+                                <p><strong>ID:</strong> ${perfume.id}</p>
+                            `;
+                            perfumeCatalog.appendChild(card);
+                        });
+                    } else if (perfumes && perfumes.id) { // Caso de un solo perfume (ej. por ID)
+                        const card = document.createElement('div');
+                        card.className = 'perfume-card';
+                        card.innerHTML = `
+                            <h4>${perfumes.nombre}</h4>
+                            <p><strong>Marca:</strong> ${perfumes.marca}</p>
+                            <p><strong>Precio:</strong> $${perfumes.precio_cop}</p>
+                            <p><strong>Stock:</strong> ${perfumes.stock}</p>
+                            <p><strong>ID:</strong> ${perfumes.id}</p>
+                        `;
+                        perfumeCatalog.appendChild(card);
+                    }
+                    else {
+                        perfumeCatalog.innerHTML = '<p>No se encontraron perfumes.</p>';
+                    }
+                } catch (error) {
+                    perfumeCatalog.innerHTML = '<p class="response-message error">Error al cargar el catálogo de perfumes.</p>';
+                    console.error('Error al cargar perfumes:', error);
+                }
+            };
+
+            const fetchPqrs = async () => {
+                const container = document.getElementById('pqrs-list-container');
+                container.innerHTML = '<p>Cargando PQRS...</p>';
+                try {
+                    const response = await fetch('http://192.168.100.3:3002/api/pqrs/all');
+                    const pqrsList = await response.json();
+                    container.innerHTML = '';
+                    if (Array.isArray(pqrsList) && pqrsList.length > 0) {
+                        pqrsList.forEach(pqrs => {
+                            const card = document.createElement('div');
+                            card.className = 'pqrs-card';
+                            card.innerHTML = `
+                                <p><strong>ID PQRS:</strong> ${pqrs.id}</p>
+                                <p><strong>Usuario:</strong> ${pqrs.usuario_id}</p>
+                                <p><strong>Tipo:</strong> ${pqrs.tipo}</p>
+                                <p><strong>Descripción:</strong> ${pqrs.descripcion}</p>
+                                <p><strong>Estado:</strong> <span style="color:var(--color-accent-gold);">${pqrs.estado}</span></p>
+                                <p><strong>Respuesta Admin:</strong> ${pqrs.respuesta_admin || 'Pendiente'}</p>
+                                <button class="toggle-button" onclick="showPqrsResponseForm(${pqrs.id})">Responder</button>
+                            `;
+                            container.appendChild(card);
+                        });
+                    } else {
+                        container.innerHTML = '<p>No hay PQRS registradas.</p>';
+                    }
+                } catch (error) {
+                    container.innerHTML = '<p class="response-message error">Error al cargar la lista de PQRS.</p>';
+                    console.error('Error al cargar PQRS:', error);
+                }
+            };
+            
+            async function enviarSolicitud(url, method = 'GET', data = null, isAuth = false) {
+                const options = {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                };
+                if (data) {
+                    options.body = JSON.stringify(data);
+                }
+
+                try {
+                    const response = await fetch(url, options);
+                    const responseData = await response.json();
+                    
+                    if (!response.ok) {
+                        showMessage(`Error ${response.status}: ${responseData.mensaje || responseData.error || 'Error desconocido'}`, true, isAuth);
+                        return { code: response.status, response: responseData };
+                    } else {
+                        showMessage(`${JSON.stringify(responseData)}`, false, isAuth);
+                        return { code: response.status, response: responseData };
+                    }
+                } catch (error) {
+                    showMessage(`Error de red o conexión: ${error.message}`, true, isAuth);
+                    return { code: 500, response: { mensaje: 'Error de conexión' } };
+                }
+            }
+
+            window.showPqrsResponseForm = (pqrsId) => {
+                const form = document.getElementById('form-pqrs-responder');
+                document.getElementById('pqrs-id-responder').value = pqrsId;
+                form.classList.remove('hidden');
+            };
+
+            // --- Event Listeners ---
+            btnShowLogin.addEventListener('click', () => toggleAuthMenu(true));
+            btnShowRegistro.addEventListener('click', () => toggleAuthMenu(false));
+
+            registroForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    nombre: document.getElementById('registro-nombre').value,
+                    email: document.getElementById('registro-email').value,
+                    usuario: document.getElementById('registro-usuario').value,
+                    password: document.getElementById('registro-password').value,
+                    rol: document.getElementById('registro-rol').value
+                };
+                enviarSolicitud('http://192.168.100.3:3001/api/usuarios/registro', 'POST', data, true);
+            });
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const usuario = document.getElementById('login-usuario').value;
+                const password = document.getElementById('login-password').value;
+                const loginData = { usuario, password };
+
+                try {
+                    const response = await fetch('http://192.168.100.3:3001/api/usuarios/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(loginData),
+                    });
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        localStorage.setItem('userRole', data.usuario.rol);
+                        localStorage.setItem('userId', data.usuario.id);
+                        toggleViews(true);
+                        welcomeMessage.textContent = `¡Hola, ${data.usuario.nombre}!`;
+                        
+                        if (data.usuario.rol === 'admin') {
+                            adminView.classList.remove('hidden');
+                            userView.classList.add('hidden');
+                            toggleAdminSection(adminProductosSection);
+                        } else {
+                            userView.classList.remove('hidden');
+                            adminView.classList.add('hidden');
+                        }
+                        fetchPerfumes(); // Recargar perfumes al iniciar sesión
+                    } else {
+                        showMessage(data.mensaje, true, true);
+                    }
+                } catch (error) {
+                    showMessage('Error de conexión. Inténtalo de nuevo.', true, true);
+                }
+            });
+
+            logoutButton.addEventListener('click', () => {
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('userId');
+                toggleViews(false);
+                document.getElementById('login-form').reset();
+                document.getElementById('registro-form').reset();
+                responseArea.classList.add('hidden');
+                authResponse.classList.add('hidden');
+                // Asegurarse de que el login sea la vista por defecto al cerrar sesión
+                toggleAuthMenu(true);
+            });
+
+            btnAdminProductos.addEventListener('click', () => toggleAdminSection(adminProductosSection));
+            btnAdminUsuarios.addEventListener('click', () => toggleAdminSection(adminUsuariosSection));
+            btnAdminPqrs.addEventListener('click', () => {
+                toggleAdminSection(adminPqrsSection);
+                fetchPqrs();
+            });
+            btnAdminEnvios.addEventListener('click', () => toggleAdminSection(adminEnviosSection)); // Listener para nueva sección admin envíos
+
+            document.getElementById('form-productos-crear').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const data = {
+                    nombre: document.getElementById('nombre-prod').value,
+                    marca: document.getElementById('marca-prod').value,
+                    notas: document.getElementById('notas-prod').value,
+                    resenas: document.getElementById('resenas-prod').value,
+                    familia: document.getElementById('familia-prod').value,
+                    tipo: document.getElementById('tipo-prod').value,
+                    genero: document.getElementById('genero-prod').value,
+                    precio: parseFloat(document.getElementById('precio-prod').value),
+                    stock: parseInt(document.getElementById('stock-prod').value, 10),
+                };
+                enviarSolicitud('http://192.168.100.3:4000/api/perfumes', 'POST', data);
+            });
+
+            document.getElementById('form-productos-actualizar').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const id = document.getElementById('id-prod-actualizar').value;
+                const data = {};
+                // Solo añadir al objeto los campos que tienen un valor
+                if (document.getElementById('nombre-prod-act').value) data.nombre = document.getElementById('nombre-prod-act').value;
+                if (document.getElementById('marca-prod-act').value) data.marca = document.getElementById('marca-prod-act').value;
+                if (document.getElementById('notas-prod-act').value) data.notas = document.getElementById('notas-prod-act').value;
+                if (document.getElementById('resenas-prod-act').value) data.resenas = document.getElementById('resenas-prod-act').value;
+                if (document.getElementById('familia-prod-act').value) data.familia = document.getElementById('familia-prod-act').value;
+                if (document.getElementById('tipo-prod-act').value) data.tipo = document.getElementById('tipo-prod-act').value;
+                if (document.getElementById('genero-prod-act').value) data.genero = document.getElementById('genero-prod-act').value;
+                if (document.getElementById('precio-prod-act').value) data.precio = parseFloat(document.getElementById('precio-prod-act').value);
+                if (document.getElementById('stock-prod-act').value) data.stock = parseInt(document.getElementById('stock-prod-act').value, 10);
+                
+                enviarSolicitud(`http://192.168.100.3:4000/api/perfumes/${id}`, 'PUT', data);
+            });
+
+            document.getElementById('form-productos-eliminar').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const id = document.getElementById('id-prod-eliminar').value;
+                enviarSolicitud(`http://192.168.100.3:4000/api/perfumes/${id}`, 'DELETE');
+            });
+            
+            document.getElementById('form-usuarios-actualizar').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const id = document.getElementById('id-usuario-act').value;
+                const data = {};
+                if (document.getElementById('nombre-usuario-act').value) data.nombre = document.getElementById('nombre-usuario-act').value;
+                if (document.getElementById('email-usuario-act').value) data.email = document.getElementById('email-usuario-act').value;
+                
+                enviarSolicitud(`http://192.168.100.3:3001/api/usuarios/${id}`, 'PUT', data);
+            });
+            
+            document.getElementById('form-usuarios-eliminar').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const id = document.getElementById('id-usuario-eliminar').value;
+                enviarSolicitud(`http://192.168.100.3:3001/api/usuarios/${id}`, 'DELETE');
+            });
+
+            formPqrsResponder.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const id = document.getElementById('pqrs-id-responder').value;
+                const data = {
+                    estado: document.getElementById('pqrs-estado-responder').value,
+                    respuestaAdmin: document.getElementById('pqrs-respuesta-admin').value,
+                };
+                await enviarSolicitud(`http://192.168.100.3:3002/api/pqrs/${id}`, 'PUT', data);
+                fetchPqrs(); // Recargar la lista de PQRS después de responder
+            });
+
+            // Admin Envios
+            formAdminObtenerEnvio.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const envioId = document.getElementById('admin-envio-id').value;
+                const displayArea = document.getElementById('admin-envio-display');
+                try {
+                    const response = await fetch(`http://192.168.100.3:3004/api/envios/${envioId}`);
+                    const data = await response.json();
+                    if (response.ok) {
+                        displayArea.innerHTML = `
+                            <h4>Detalles del Envío (ID: ${data.id}):</h4>
+                            <p><strong>Compra ID:</strong> ${data.compra_id}</p>
+                            <p><strong>Estado:</strong> <span style="color:var(--color-accent-gold);">${data.estado}</span></p>
+                            <p><strong>Dirección:</strong> ${data.direccion_envio}</p>
+                            <p><strong>Fecha de Creación:</strong> ${new Date(data.fecha_creacion).toLocaleString()}</p>
+                            <p><strong>Última Actualización:</strong> ${new Date(data.fecha_actualizacion).toLocaleString()}</p>
+                        `;
+                    } else {
+                        displayArea.innerHTML = `<p class="response-message error">${data.mensaje || 'Envío no encontrado'}</p>`;
+                    }
+                } catch (error) {
+                    showMessage('Error de conexión con el servicio de envíos.', true);
+                }
+            });
+
+            formAdminActualizarEnvio.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const envioId = document.getElementById('admin-update-envio-id').value;
+                const newEstado = document.getElementById('admin-update-estado-envio').value;
+                const data = { estado: newEstado };
+                await enviarSolicitud(`http://192.168.100.3:3004/api/envios/${envioId}`, 'PUT', data);
+            });
+
+
+            toggleCompras.addEventListener('click', () => toggleUserSection(seccionCompras));
+            togglePqrs.addEventListener('click', () => toggleUserSection(seccionPqrs));
+            toggleEnvios.addEventListener('click', () => toggleUserSection(seccionEnvios));
+
+            document.getElementById('form-compras-crear').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    usuarioId: localStorage.getItem('userId'),
+                    productoId: document.getElementById('compra-productoId').value,
+                    cantidad: parseInt(document.getElementById('compra-cantidad').value, 10),
+                    direccionEnvio: document.getElementById('compra-direccionEnvio').value,
+                };
+                const res = await enviarSolicitud('http://192.168.100.3:3003/api/compras', 'POST', data);
+                if (res && res.code === 201) {
+                    showMessage(`¡Compra procesada! ID de Compra: ${res.response.compraId}`, false);
+                    document.getElementById('compraId-envio').value = res.response.compraId; // Precargar ID para consulta de envío
+                } else {
+                    showMessage(res ? res.response.mensaje : 'Error al procesar la compra', true);
+                }
+            });
+
+            document.getElementById('form-pqrs-crear').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const data = {
+                    usuarioId: localStorage.getItem('userId'),
+                    tipo: document.getElementById('tipo-pqrs').value,
+                    descripcion: document.getElementById('descripcion-pqrs').value,
+                };
+                const res = await enviarSolicitud('http://192.168.100.3:3002/api/pqrs', 'POST', data);
+                if (res && res.code === 201) {
+                    showMessage(`PQRS creada con éxito.`, false);
+                } else {
+                    showMessage(res ? res.response.mensaje : 'Error al crear la PQRS', true);
+                }
+            });
+
+            document.getElementById('form-envios-obtener').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const compraId = document.getElementById('compraId-envio').value;
+                const url = `http://192.168.100.3:3004/api/envios/compra/${compraId}`; // Endpoint para obtener envío por compraId
+                const displayArea = document.getElementById('envio-status-display');
+                
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        displayArea.innerHTML = `
+                            <h4>Estado de tu Envío:</h4>
+                            <p><strong>ID de Compra:</strong> ${data.compra_id}</p>
+                            <p><strong>Estado:</strong> <span style="color:var(--color-accent-gold);">${data.estado}</span></p>
+                            <p><strong>Dirección:</strong> ${data.direccion_envio}</p>
+                            <p><strong>Fecha de Creación:</strong> ${new Date(data.fecha_creacion).toLocaleString()}</p>
+                            <p><strong>Última Actualización:</strong> ${new Date(data.fecha_actualizacion).toLocaleString()}</p>
+                        `;
+                    } else {
+                        displayArea.innerHTML = `<p class="response-message error">${data.mensaje || 'Envío no encontrado para esta compra.'}</p>`;
+                    }
+                } catch (error) {
+                    showMessage('Error de conexión con el servicio de envíos.', true);
+                }
+            });
+
+            filtroForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const filtro = tipoFiltroSelect.value;
+                const valor = filtroTextoInput.value;
+                
+                fetchPerfumes(filtro, valor);
+            });
+
+            // Cargar perfumes al iniciar la página
+            fetchPerfumes();
+            // Asegurarse de que la vista de login esté activa por defecto
+            toggleAuthMenu(true);
+        });
+    </script>
+</body>
+</html>

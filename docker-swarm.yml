@@ -1,0 +1,202 @@
+version: "3.8"
+
+services:
+
+  haproxy:
+    image: gonoalejo/haproxy:superstable2
+    ports:
+      - "5080:80"
+      - "8404:8404"
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu2
+
+  frontend_scrapperfumestore:
+    image: gonoalejo/frontend_scrapperfumestore:latest
+    ports:
+      - "8080:80"
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu2
+
+  mariadb_usuarios:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: usuariosdb
+    ports:
+      - "3307:3306"
+    volumes:
+      - usuarios_data:/var/lib/mysql
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu1
+
+  mariadb_compras:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: comprasdb
+    ports:
+      - "3308:3306"
+    volumes:
+      - compras_data:/var/lib/mysql
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu1
+
+  mariadb_envios:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: enviosdb
+    ports:
+      - "3309:3306"
+    volumes:
+      - envios_data:/var/lib/mysql
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu1
+
+  mariadb_perfumes:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: perfumesdb
+    ports:
+      - "3310:3306"
+    volumes:
+      - perfumes_data:/var/lib/mysql
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu1
+
+  mariadb_pqrs:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pqrsdb
+    ports:
+      - "3311:3306"
+    volumes:
+      - pqrs_data:/var/lib/mysql
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu1
+
+  microservicios_usuarios:
+    image: gonoalejo/microservicios_usuarios:latest
+    ports:
+      - "3001:3001"
+    environment:
+      - DB_HOST=192.168.100.3
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=usuariosdb
+      - DB_PORT=3307
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu3
+
+  microservicios_compras:
+    image: gonoalejo/microservicios_compras:2.0
+    ports:
+      - "3003:3003"
+    environment:
+      - DB_HOST=192.168.100.3
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=comprasdb
+      - DB_PORT=3308
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu3
+
+  microservicios_envios:
+    image: gonoalejo/microservicios_envios:latest
+    ports:
+      - "3004:3004"
+    environment:
+      - DB_HOST=192.168.100.3
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=enviosdb
+      - DB_PORT=3309
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu3
+
+  microservicios_perfumes:
+    image: gonoalejo/microservicios_perfumes:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - DB_HOST=192.168.100.3
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=perfumesdb
+      - DB_PORT=3310
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu3
+
+  microservicios_pqrs:
+    image: gonoalejo/microservicios_pqrs:latest
+    ports:
+      - "3002:3002"
+    environment:
+      - DB_HOST=192.168.100.3
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=pqrsdb
+      - DB_PORT=3311
+    networks:
+      - proyecto_final_net
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == servidorUbuntu3
+
+volumes:
+  usuarios_data:
+  compras_data:
+  envios_data:
+  perfumes_data:
+  pqrs_data:
+
+networks:
+  proyecto_final_net:
+    external: true
