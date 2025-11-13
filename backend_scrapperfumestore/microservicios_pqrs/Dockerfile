@@ -8,4 +8,4 @@ RUN npm install --production
 COPY . .
 
 EXPOSE 3002
-CMD ["node", "src.pqrs/server.js"]
+CMD ["node", "src.pqrs/index.js"]
