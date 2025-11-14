@@ -10,6 +10,7 @@ Universidad Autónoma de Occidente – 2025
 En el nodo 2 (manager):
 
 git clone https://github.com/turepo/proyecto_final.git
+
 cd proyecto_final
 
 Haz lo mismo en los nodos 1 y 3 si necesitas los archivos localmente.
