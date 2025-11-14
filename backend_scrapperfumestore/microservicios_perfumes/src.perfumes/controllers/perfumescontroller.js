@@ -116,5 +116,3 @@ router.get('/api/perfumes/precio/:precio', async (req, res) => {
 });
 
 module.exports = router;
-
-module.exports = router;
