@@ -73,9 +73,13 @@ http://192.168.100.3:8404
 APIs:
 
 http://192.168.100.3:5080/api/usuarios
+
 http://192.168.100.3:5080/api/perfumes
+
 http://192.168.100.3:5080/api/compras
+
 http://192.168.100.3:5080/api/envios
+
 http://192.168.100.3:5080/api/pqrs
 
 
